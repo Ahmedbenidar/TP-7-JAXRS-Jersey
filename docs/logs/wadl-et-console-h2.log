@@ -1,0 +1,106 @@
+==============================================================
+ CONTRAT WADL GENERE PAR JERSEY (http://localhost:8082/application.wadl)
+ Date : 2026-11-02 18:51:24
+==============================================================
+
+PS> curl.exe -s -X GET "http://localhost:8082/application.wadl"
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<application xmlns="http://wadl.dev.java.net/2009/02">
+    <doc xmlns:jersey="http://jersey.java.net/" jersey:generatedBy="Jersey: 3.1.9 2024-10-07 10:58:31"/>
+    <doc xmlns:jersey="http://jersey.java.net/" jersey:hint="This is simplified WADL with user and core resources only. To get full WADL with extended resources use the query parameter detail. Link: http://localhost:8082/application.wadl?detail=true"/>
+    <grammars>
+        <include href="application.wadl/xsd0.xsd">
+            <doc title="Generated" xml:lang="en"/>
+        </include>
+    </grammars>
+    <resources base="http://localhost:8082/">
+        <resource path="/banque">
+            <resource path="/comptes/{id}">
+                <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="id" style="template" type="xs:long"/>
+                <method id="getCompte" name="GET">
+                    <response>
+                        <ns2:representation xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" element="compte" mediaType="application/json"/>
+                        <ns2:representation xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" element="compte" mediaType="application/xml"/>
+                    </response>
+                </method>
+                <method id="deleteCompte" name="DELETE">
+                    <response>
+                        <representation mediaType="application/json"/>
+                        <representation mediaType="application/xml"/>
+                    </response>
+                </method>
+                <method id="updateCompte" name="PUT">
+                    <request>
+                        <ns2:representation xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" element="compte" mediaType="application/json"/>
+                        <ns2:representation xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" element="compte" mediaType="application/xml"/>
+                    </request>
+                    <response>
+                        <ns2:representation xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" element="compte" mediaType="application/json"/>
+                        <ns2:representation xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" element="compte" mediaType="application/xml"/>
+                    </response>
+                </method>
+            </resource>
+            <resource path="/comptes/reference/{numero}">
+                <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="numero" style="template" type="xs:string"/>
+                <method id="getCompteParNumero" name="GET">
+                    <response>
+                        <ns2:representation xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" element="compte" mediaType="application/json"/>
+                        <ns2:representation xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" element="compte" mediaType="application/xml"/>
+                    </response>
+                </method>
+            </resource>
+            <resource path="/comptes">
+                <method id="getComptes" name="GET">
+                    <request>
+                        <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="type" style="query" type="xs:string"/>
+                        <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="soldeMin" style="query" type="xs:double"/>
+                        <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="soldeMax" style="query" type="xs:double"/>
+                    </request>
+                    <response>
+                        <ns2:representation xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" element="comptes" mediaType="application/json"/>
+                        <ns2:representation xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" element="comptes" mediaType="application/xml"/>
+                    </response>
+                </method>
+                <method id="addCompte" name="POST">
+                    <request>
+                        <ns2:representation xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" element="compte" mediaType="application/json"/>
+                        <ns2:representation xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" element="compte" mediaType="application/xml"/>
+                    </request>
+                    <response>
+                        <representation mediaType="application/json"/>
+                        <representation mediaType="application/xml"/>
+                    </response>
+                </method>
+            </resource>
+            <resource path="/comptes/statistiques">
+                <method id="getStatistiques" name="GET">
+                    <response>
+                        <ns2:representation xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" element="statistiques" mediaType="application/json"/>
+                        <ns2:representation xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" element="statistiques" mediaType="application/xml"/>
+                    </response>
+                </method>
+            </resource>
+        </resource>
+    </resources>
+</application>
+
+PS> curl.exe -s -o NUL -w "HTTP %{http_code}" "http://localhost:8082/application.wadl"
+HTTP 200
+
+==============================================================
+ CONSOLE H2 (http://localhost:8082/h2-console)
+==============================================================
+
+PS> curl.exe -s -o NUL -w "HTTP %{http_code}" -L "http://localhost:8082/h2-console/"
+HTTP 200
+
+# Parametres de connexion a saisir dans la console H2 :
+#   JDBC URL : jdbc:h2:mem:banque
+#   User Name: sa
+#   Password : (vide)
+
+# Requete executee dans la console :
+#   SELECT ID, NUMERO_COMPTE, TITULAIRE, SOLDE, TYPE FROM COMPTE ORDER BY ID;
+
+PS> curl.exe -s -X GET "http://localhost:8082/banque/comptes" -H "Accept: application/json"
+{"compte":[{"id":1,"numeroCompte":"BQ-2026-000101","titulaire":"Nadia El Amrani","solde":14000.0,"dateCreation":"2024-01-15","type":"COURANT"},{"id":2,"numeroCompte":"BQ-2026-000102","titulaire":"Youssef Bennis","solde":48200.0,"dateCreation":"2023-11-02","type":"EPARGNE"},{"id":3,"numeroCompte":"BQ-2026-000103","titulaire":"Salma Ouazzani","solde":7300.4,"dateCreation":"2024-03-21","type":"COURANT"},{"id":4,"numeroCompte":"BQ-2026-000104","titulaire":"Karim Tazi","solde":15600.0,"dateCreation":"2024-06-09","type":"EPARGNE"},{"id":5,"numeroCompte":"BQ-2026-000105","titulaire":"Hind Berrada","solde":4009.78,"dateCreation":"2025-01-30","type":"COURANT"},{"id":6,"numeroCompte":"BQ-2026-000199","titulaire":"Amine Cherkaoui","solde":9875.5,"dateCreation":"2025-02-14","type":"EPARGNE"}]}

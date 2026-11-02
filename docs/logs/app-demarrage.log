@@ -1,0 +1,409 @@
+﻿[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------< com.ahmedbenidar:banque-jaxrs-jersey >----------------
+[INFO] Building banque-jaxrs-jersey 1.0.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.3.5:run (default-cli) > test-compile @ banque-jaxrs-jersey >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ banque-jaxrs-jersey ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ banque-jaxrs-jersey ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 13 source files with javac [debug parameters release 17] to target\classes
+[INFO] Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ banque-jaxrs-jersey ---
+[INFO] skip non existing resourceDirectory C:\Users\dell\Desktop\tp7_jaxrs_jersey\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ banque-jaxrs-jersey ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] <<< spring-boot:3.3.5:run (default-cli) < test-compile @ banque-jaxrs-jersey <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:3.3.5:run (default-cli) @ banque-jaxrs-jersey ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2026-11-02T18:50:18.384Z  INFO 25960 --- [  restartedMain] c.a.banque.BanqueJaxrsApplication        : Starting BanqueJaxrsApplication using Java 21.0.9 with PID 25960 (C:\Users\dell\Desktop\tp7_jaxrs_jersey\target\classes started by dell in C:\Users\dell\Desktop\tp7_jaxrs_jersey)
+2026-11-02T18:50:18.391Z  INFO 25960 --- [  restartedMain] c.a.banque.BanqueJaxrsApplication        : No active profile set, falling back to 1 default profile: "default"
+2026-11-02T18:50:18.484Z  INFO 25960 --- [  restartedMain] o.s.b.devtools.restart.ChangeableUrls    : The Class-Path manifest attribute in C:\Users\dell\.m2\repository\org\glassfish\hk2\hk2\3.0.6\hk2-3.0.6.jar referenced one or more files that do not exist: file:/C:/Users/dell/.m2/repository/org/glassfish/hk2/hk2/3.0.6/hk2-utils.jar,file:/C:/Users/dell/.m2/repository/org/glassfish/hk2/hk2/3.0.6/jakarta.annotation-api.jar,file:/C:/Users/dell/.m2/repository/org/glassfish/hk2/hk2/3.0.6/jakarta.inject-api.jar,file:/C:/Users/dell/.m2/repository/org/glassfish/hk2/hk2/3.0.6/hk2-api.jar,file:/C:/Users/dell/.m2/repository/org/glassfish/hk2/hk2/3.0.6/aopalliance-repackaged.jar,file:/C:/Users/dell/.m2/repository/org/glassfish/hk2/hk2/3.0.6/hk2-core.jar,file:/C:/Users/dell/.m2/repository/org/glassfish/hk2/hk2/3.0.6/hk2-locator.jar,file:/C:/Users/dell/.m2/repository/org/glassfish/hk2/hk2/3.0.6/javassist.jar,file:/C:/Users/dell/.m2/repository/org/glassfish/hk2/hk2/3.0.6/hk2-runlevel.jar,file:/C:/Users/dell/.m2/repository/org/glassfish/hk2/hk2/3.0.6/class-model.jar,file:/C:/Users/dell/.m2/repository/org/glassfish/hk2/hk2/3.0.6/asm.jar,file:/C:/Users/dell/.m2/repository/org/glassfish/hk2/hk2/3.0.6/asm-analysis.jar,file:/C:/Users/dell/.m2/repository/org/glassfish/hk2/hk2/3.0.6/asm-commons.jar,file:/C:/Users/dell/.m2/repository/org/glassfish/hk2/hk2/3.0.6/asm-tree.jar,file:/C:/Users/dell/.m2/repository/org/glassfish/hk2/hk2/3.0.6/asm-util.jar
+2026-11-02T18:50:18.484Z  INFO 25960 --- [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-11-02T18:50:18.484Z  INFO 25960 --- [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-11-02T18:50:19.669Z  INFO 25960 --- [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-02T18:50:19.772Z  INFO 25960 --- [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 92 ms. Found 1 JPA repository interface.
+2026-11-02T18:50:20.707Z  INFO 25960 --- [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8082 (http)
+2026-11-02T18:50:20.727Z  INFO 25960 --- [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-11-02T18:50:20.728Z  INFO 25960 --- [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-11-02T18:50:20.812Z  INFO 25960 --- [  restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-11-02T18:50:20.813Z  INFO 25960 --- [  restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2327 ms
+2026-11-02T18:50:21.018Z  INFO 25960 --- [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-11-02T18:50:21.339Z  INFO 25960 --- [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:banque user=SA
+2026-11-02T18:50:21.343Z  INFO 25960 --- [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-11-02T18:50:21.362Z  INFO 25960 --- [  restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:banque'
+2026-11-02T18:50:21.533Z  INFO 25960 --- [  restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-02T18:50:21.617Z  INFO 25960 --- [  restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-11-02T18:50:21.664Z  INFO 25960 --- [  restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-11-02T18:50:22.084Z  INFO 25960 --- [  restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-02T18:50:23.518Z  INFO 25960 --- [  restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Hibernate: 
+    create table compte (
+        id bigint generated by default as identity,
+        date_creation date,
+        numero_compte varchar(20),
+        solde float(53) not null,
+        titulaire varchar(80),
+        type tinyint not null check (type between 0 and 1),
+        primary key (id)
+    )
+Hibernate: 
+    alter table if exists compte 
+       drop constraint if exists UKhx2we7gc1i1c5ylusignv31f3
+Hibernate: 
+    alter table if exists compte 
+       add constraint UKhx2we7gc1i1c5ylusignv31f3 unique (numero_compte)
+2026-11-02T18:50:23.655Z  INFO 25960 --- [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-02T18:50:24.055Z  INFO 25960 --- [  restartedMain] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-11-02T18:50:25.137Z  INFO 25960 --- [  restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2026-11-02T18:50:25.183Z  INFO 25960 --- [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8082 (http) with context path '/'
+2026-11-02T18:50:25.195Z  INFO 25960 --- [  restartedMain] c.a.banque.BanqueJaxrsApplication        : Started BanqueJaxrsApplication in 7.605 seconds (process running for 8.934)
+Hibernate: 
+    select
+        count(*) 
+    from
+        compte c1_0
+Hibernate: 
+    insert 
+    into
+        compte
+        (date_creation, numero_compte, solde, titulaire, type, id) 
+    values
+        (?, ?, ?, ?, ?, default)
+Hibernate: 
+    insert 
+    into
+        compte
+        (date_creation, numero_compte, solde, titulaire, type, id) 
+    values
+        (?, ?, ?, ?, ?, default)
+Hibernate: 
+    insert 
+    into
+        compte
+        (date_creation, numero_compte, solde, titulaire, type, id) 
+    values
+        (?, ?, ?, ?, ?, default)
+Hibernate: 
+    insert 
+    into
+        compte
+        (date_creation, numero_compte, solde, titulaire, type, id) 
+    values
+        (?, ?, ?, ?, ?, default)
+Hibernate: 
+    insert 
+    into
+        compte
+        (date_creation, numero_compte, solde, titulaire, type, id) 
+    values
+        (?, ?, ?, ?, ?, default)
+=== Jeu de donnees initial : 5 comptes bancaires inseres ===
+=== Contenu de la table COMPTE ===
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.date_creation,
+        c1_0.numero_compte,
+        c1_0.solde,
+        c1_0.titulaire,
+        c1_0.type 
+    from
+        compte c1_0
+Compte(id=1, numeroCompte=BQ-2026-000101, titulaire=Nadia El Amrani, solde=12500.75, dateCreation=2024-01-15, type=COURANT)
+Compte(id=2, numeroCompte=BQ-2026-000102, titulaire=Youssef Bennis, solde=48200.0, dateCreation=2023-11-02, type=EPARGNE)
+Compte(id=3, numeroCompte=BQ-2026-000103, titulaire=Salma Ouazzani, solde=7300.4, dateCreation=2024-03-21, type=COURANT)
+Compte(id=4, numeroCompte=BQ-2026-000104, titulaire=Karim Tazi, solde=15600.0, dateCreation=2024-06-09, type=EPARGNE)
+Compte(id=5, numeroCompte=BQ-2026-000105, titulaire=Hind Berrada, solde=4009.78, dateCreation=2025-01-30, type=COURANT)
+Hibernate: 
+    select
+        count(*) 
+    from
+        compte c1_0
+=== Nombre total de comptes : 5 ===
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.date_creation,
+        c1_0.numero_compte,
+        c1_0.solde,
+        c1_0.titulaire,
+        c1_0.type 
+    from
+        compte c1_0
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.date_creation,
+        c1_0.numero_compte,
+        c1_0.solde,
+        c1_0.titulaire,
+        c1_0.type 
+    from
+        compte c1_0
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.date_creation,
+        c1_0.numero_compte,
+        c1_0.solde,
+        c1_0.titulaire,
+        c1_0.type 
+    from
+        compte c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.date_creation,
+        c1_0.numero_compte,
+        c1_0.solde,
+        c1_0.titulaire,
+        c1_0.type 
+    from
+        compte c1_0
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.date_creation,
+        c1_0.numero_compte,
+        c1_0.solde,
+        c1_0.titulaire,
+        c1_0.type 
+    from
+        compte c1_0
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.date_creation,
+        c1_0.numero_compte,
+        c1_0.solde,
+        c1_0.titulaire,
+        c1_0.type 
+    from
+        compte c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.date_creation,
+        c1_0.numero_compte,
+        c1_0.solde,
+        c1_0.titulaire,
+        c1_0.type 
+    from
+        compte c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.date_creation,
+        c1_0.numero_compte,
+        c1_0.solde,
+        c1_0.titulaire,
+        c1_0.type 
+    from
+        compte c1_0 
+    where
+        c1_0.type=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.date_creation,
+        c1_0.numero_compte,
+        c1_0.solde,
+        c1_0.titulaire,
+        c1_0.type 
+    from
+        compte c1_0 
+    where
+        c1_0.solde between ? and ? 
+    order by
+        c1_0.solde
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.date_creation,
+        c1_0.numero_compte,
+        c1_0.solde,
+        c1_0.titulaire,
+        c1_0.type 
+    from
+        compte c1_0 
+    where
+        c1_0.numero_compte=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.date_creation,
+        c1_0.numero_compte,
+        c1_0.solde,
+        c1_0.titulaire,
+        c1_0.type 
+    from
+        compte c1_0
+Hibernate: 
+    select
+        coalesce(sum(c1_0.solde), 0) 
+    from
+        compte c1_0 
+    where
+        c1_0.type=?
+Hibernate: 
+    select
+        coalesce(sum(c1_0.solde), 0) 
+    from
+        compte c1_0 
+    where
+        c1_0.type=?
+Hibernate: 
+    insert 
+    into
+        compte
+        (date_creation, numero_compte, solde, titulaire, type, id) 
+    values
+        (?, ?, ?, ?, ?, default)
+Hibernate: 
+    insert 
+    into
+        compte
+        (date_creation, numero_compte, solde, titulaire, type, id) 
+    values
+        (?, ?, ?, ?, ?, default)
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.date_creation,
+        c1_0.numero_compte,
+        c1_0.solde,
+        c1_0.titulaire,
+        c1_0.type 
+    from
+        compte c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    update
+        compte 
+    set
+        date_creation=?,
+        numero_compte=?,
+        solde=?,
+        titulaire=?,
+        type=? 
+    where
+        id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.date_creation,
+        c1_0.numero_compte,
+        c1_0.solde,
+        c1_0.titulaire,
+        c1_0.type 
+    from
+        compte c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.date_creation,
+        c1_0.numero_compte,
+        c1_0.solde,
+        c1_0.titulaire,
+        c1_0.type 
+    from
+        compte c1_0
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.date_creation,
+        c1_0.numero_compte,
+        c1_0.solde,
+        c1_0.titulaire,
+        c1_0.type 
+    from
+        compte c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    delete 
+    from
+        compte 
+    where
+        id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.date_creation,
+        c1_0.numero_compte,
+        c1_0.solde,
+        c1_0.titulaire,
+        c1_0.type 
+    from
+        compte c1_0
+Hibernate: 
+    select
+        coalesce(sum(c1_0.solde), 0) 
+    from
+        compte c1_0 
+    where
+        c1_0.type=?
+Hibernate: 
+    select
+        coalesce(sum(c1_0.solde), 0) 
+    from
+        compte c1_0 
+    where
+        c1_0.type=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.date_creation,
+        c1_0.numero_compte,
+        c1_0.solde,
+        c1_0.titulaire,
+        c1_0.type 
+    from
+        compte c1_0
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.date_creation,
+        c1_0.numero_compte,
+        c1_0.solde,
+        c1_0.titulaire,
+        c1_0.type 
+    from
+        compte c1_0

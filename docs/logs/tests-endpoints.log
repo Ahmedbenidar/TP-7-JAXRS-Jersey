@@ -1,0 +1,118 @@
+﻿==============================================================
+ TEST DES SERVICES REST JAX-RS / JERSEY - APPLICATION BANQUE
+ Cible : http://localhost:8082
+ Date  : 2026-11-02 18:51:10
+==============================================================
+
+### 1. L'application repond-elle ? ###
+# Verification de la disponibilite du service
+
+PS> curl.exe -s -X GET "http://localhost:8082/banque/comptes/1" -H "Accept: application/json"
+{"id":1,"numeroCompte":"BQ-2026-000101","titulaire":"Nadia El Amrani","solde":12500.75,"dateCreation":"2024-01-15","type":"COURANT"}
+[HTTP 200]
+
+### 2. READ - tous les comptes au format JSON ###
+# En-tete Accept: application/json
+
+PS> curl.exe -s -X GET "http://localhost:8082/banque/comptes" -H "Accept: application/json"
+{"compte":[{"id":1,"numeroCompte":"BQ-2026-000101","titulaire":"Nadia El Amrani","solde":12500.75,"dateCreation":"2024-01-15","type":"COURANT"},{"id":2,"numeroCompte":"BQ-2026-000102","titulaire":"Youssef Bennis","solde":48200.0,"dateCreation":"2023-11-02","type":"EPARGNE"},{"id":3,"numeroCompte":"BQ-2026-000103","titulaire":"Salma Ouazzani","solde":7300.4,"dateCreation":"2024-03-21","type":"COURANT"},{"id":4,"numeroCompte":"BQ-2026-000104","titulaire":"Karim Tazi","solde":15600.0,"dateCreation":"2024-06-09","type":"EPARGNE"},{"id":5,"numeroCompte":"BQ-2026-000105","titulaire":"Hind Berrada","solde":4009.78,"dateCreation":"2025-01-30","type":"COURANT"}]}
+[HTTP 200]
+
+### 3. READ - tous les comptes au format XML ###
+# Meme endpoint, en-tete Accept: application/xml
+
+PS> curl.exe -s -X GET "http://localhost:8082/banque/comptes" -H "Accept: application/xml"
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><comptes><compte><id>1</id><numeroCompte>BQ-2026-000101</numeroCompte><titulaire>Nadia El Amrani</titulaire><solde>12500.75</solde><dateCreation>2024-01-15T00:00:00Z</dateCreation><type>COURANT</type></compte><compte><id>2</id><numeroCompte>BQ-2026-000102</numeroCompte><titulaire>Youssef Bennis</titulaire><solde>48200.0</solde><dateCreation>2023-11-02T00:00:00Z</dateCreation><type>EPARGNE</type></compte><compte><id>3</id><numeroCompte>BQ-2026-000103</numeroCompte><titulaire>Salma Ouazzani</titulaire><solde>7300.4</solde><dateCreation>2024-03-21T00:00:00Z</dateCreation><type>COURANT</type></compte><compte><id>4</id><numeroCompte>BQ-2026-000104</numeroCompte><titulaire>Karim Tazi</titulaire><solde>15600.0</solde><dateCreation>2024-06-09T00:00:00Z</dateCreation><type>EPARGNE</type></compte><compte><id>5</id><numeroCompte>BQ-2026-000105</numeroCompte><titulaire>Hind Berrada</titulaire><solde>4009.78</solde><dateCreation>2025-01-30T00:00:00Z</dateCreation><type>COURANT</type></compte></comptes>
+[HTTP 200]
+
+### 4. READ - un compte par identifiant (JSON) ###
+
+PS> curl.exe -s -X GET "http://localhost:8082/banque/comptes/2" -H "Accept: application/json"
+{"id":2,"numeroCompte":"BQ-2026-000102","titulaire":"Youssef Bennis","solde":48200.0,"dateCreation":"2023-11-02","type":"EPARGNE"}
+[HTTP 200]
+
+### 5. READ - le meme compte au format XML ###
+# @XmlRootElement permet la serialisation JAXB
+
+PS> curl.exe -s -X GET "http://localhost:8082/banque/comptes/2" -H "Accept: application/xml"
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><compte><id>2</id><numeroCompte>BQ-2026-000102</numeroCompte><titulaire>Youssef Bennis</titulaire><solde>48200.0</solde><dateCreation>2023-11-02T00:00:00Z</dateCreation><type>EPARGNE</type></compte>
+[HTTP 200]
+
+### 6. READ - filtrage par type de compte ###
+# Parametre de requete ?type=EPARGNE
+
+PS> curl.exe -s -X GET "http://localhost:8082/banque/comptes?type=EPARGNE" -H "Accept: application/json"
+{"compte":[{"id":2,"numeroCompte":"BQ-2026-000102","titulaire":"Youssef Bennis","solde":48200.0,"dateCreation":"2023-11-02","type":"EPARGNE"},{"id":4,"numeroCompte":"BQ-2026-000104","titulaire":"Karim Tazi","solde":15600.0,"dateCreation":"2024-06-09","type":"EPARGNE"}]}
+[HTTP 200]
+
+### 7. READ - recherche par intervalle de solde ###
+# Parametres ?soldeMin=10000&soldeMax=20000
+
+PS> curl.exe -s -X GET "http://localhost:8082/banque/comptes?soldeMin=10000&soldeMax=20000" -H "Accept: application/json"
+{"compte":[{"id":1,"numeroCompte":"BQ-2026-000101","titulaire":"Nadia El Amrani","solde":12500.75,"dateCreation":"2024-01-15","type":"COURANT"},{"id":4,"numeroCompte":"BQ-2026-000104","titulaire":"Karim Tazi","solde":15600.0,"dateCreation":"2024-06-09","type":"EPARGNE"}]}
+[HTTP 200]
+
+### 8. READ - un compte par sa reference metier ###
+
+PS> curl.exe -s -X GET "http://localhost:8082/banque/comptes/reference/BQ-2026-000102" -H "Accept: application/json"
+{"id":2,"numeroCompte":"BQ-2026-000102","titulaire":"Youssef Bennis","solde":48200.0,"dateCreation":"2023-11-02","type":"EPARGNE"}
+[HTTP 200]
+
+### 9. READ - indicateurs agreges ###
+
+PS> curl.exe -s -X GET "http://localhost:8082/banque/comptes/statistiques" -H "Accept: application/json"
+{"nombreComptes":5,"soldeTotal":87610.93,"soldeMoyen":17522.19,"soldeComptesCourants":23810.93,"soldeComptesEpargne":63800.0,"devise":"MAD"}
+[HTTP 200]
+
+### 10. CREATE - ajout d'un compte (JSON) ###
+# Corps de requete envoye :
+  {
+    "numeroCompte": "BQ-2026-000199",
+    "titulaire": "Amine Cherkaoui",
+    "solde": 9875.50,
+    "dateCreation": "2025-02-14",
+    "type": "EPARGNE"
+  }
+
+PS> curl.exe -s -X POST "http://localhost:8082/banque/comptes" -H "Content-Type: application/json" -H "Accept: application/json" -d "@C:\Users\dell\Desktop\tp7_jaxrs_jersey\docs\tools\..\payloads\compte-nouveau.json"
+{"id":6,"numeroCompte":"BQ-2026-000199","titulaire":"Amine Cherkaoui","solde":9875.5,"dateCreation":"2025-02-14","type":"EPARGNE"}
+[HTTP 201]
+
+### 11. CREATE - ajout d'un compte (XML) ###
+# Le service consomme aussi du XML (@Consumes application/xml)
+
+PS> curl.exe -s -X POST "http://localhost:8082/banque/comptes" -H "Content-Type: application/xml" -H "Accept: application/xml" -d "@C:\Users\dell\Desktop\tp7_jaxrs_jersey\docs\tools\..\payloads\compte-nouveau.xml"
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><compte><id>7</id><numeroCompte>BQ-2026-000201</numeroCompte><titulaire>Leila Mansouri</titulaire><solde>3200.0</solde><dateCreation>2025-03-08T00:00:00Z</dateCreation><type>COURANT</type></compte>
+[HTTP 201]
+
+### 12. UPDATE - modification du compte 1 ###
+# Nouveau solde : 14000.00
+
+PS> curl.exe -s -X PUT "http://localhost:8082/banque/comptes/1" -H "Content-Type: application/json" -H "Accept: application/json" -d "@C:\Users\dell\Desktop\tp7_jaxrs_jersey\docs\tools\..\payloads\compte-modifie.json"
+{"id":1,"numeroCompte":"BQ-2026-000101","titulaire":"Nadia El Amrani","solde":14000.0,"dateCreation":"2024-01-15","type":"COURANT"}
+[HTTP 200]
+
+### 13. Gestion d'erreur - compte inexistant ###
+# L'ExceptionMapper JAX-RS transforme l'erreur en HTTP 404 JSON
+
+PS> curl.exe -s -X GET "http://localhost:8082/banque/comptes/9999" -H "Accept: application/json"
+{"code":404,"erreur":"COMPTE_INTROUVABLE","message":"Aucun compte bancaire ne correspond a l'identifiant 9999"}
+[HTTP 404]
+
+### 14. DELETE - suppression du compte cree au point 11 ###
+# Suppression du compte id=7
+
+PS> curl.exe -s -X DELETE "http://localhost:8082/banque/comptes/7"
+
+[HTTP 204]
+
+### 15. VERIFICATION FINALE - etat de la table ###
+# Indicateurs apres les operations CRUD
+
+PS> curl.exe -s -X GET "http://localhost:8082/banque/comptes/statistiques" -H "Accept: application/json"
+{"nombreComptes":6,"soldeTotal":98985.68,"soldeMoyen":16497.61,"soldeComptesCourants":25310.18,"soldeComptesEpargne":73675.5,"devise":"MAD"}
+[HTTP 200]
+
+==============================================================
+ FIN DES TESTS
+==============================================================

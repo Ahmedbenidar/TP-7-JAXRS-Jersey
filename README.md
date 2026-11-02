@@ -460,9 +460,3 @@ réellement enregistrée — pas seulement déclarée dans le code.
 
 ---
 
-## État du lab
-
-| Étape | État |
-|---|---|
-| 1 → 10 (partie technique) | ✅ réalisées et vérifiées sur une exécution réelle |
-| QCM final | ⛔ volontairement non traité, à la demande |

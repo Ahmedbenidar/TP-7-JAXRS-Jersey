@@ -197,44 +197,31 @@ On y retrouve bien les comptes insérés par le `CommandLineRunner`, avec `TYPE 
 
 ### `TypeCompte`
 
-```java
-public enum TypeCompte {
-    COURANT, EPARGNE
-}
-```
+Énumération à deux constantes, `COURANT` et `EPARGNE`, exactement comme dans l'énoncé.
+Elle est utilisée par le champ `type` de l'entité et par l'endpoint de filtrage.
 
 ### `Compte`
 
-```java
-@Entity
-@Table(name = "compte")
-@XmlRootElement(name = "compte")
-@XmlAccessorType(XmlAccessType.FIELD)
-@Data @Builder @NoArgsConstructor @AllArgsConstructor
-public class Compte implements Serializable {
+Entité JPA mappée sur la table `compte`, et en même temps classe modèle JAXB.
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+| Annotation | Effet |
+|---|---|
+| `@Entity` + `@Table(name = "compte")` | entité Hibernate, table `compte` |
+| `@Id` + `@GeneratedValue(IDENTITY)` | clé primaire auto-incrémentée |
+| `@XmlRootElement(name = "compte")` | élément racine JAXB → sérialisation XML possible |
+| `@XmlAccessorType(FIELD)` | JAXB lit les champs, pas les getters générés par Lombok |
+| `@Data`, `@Builder`, `@NoArgsConstructor`, `@AllArgsConstructor` | accesseurs, constructeurs et `toString` fournis par Lombok |
 
-    @Column(name = "numero_compte", unique = true, length = 20)
-    private String numeroCompte;                       // personnalisation
+Les champs :
 
-    @Column(name = "titulaire", length = 80)
-    private String titulaire;                          // personnalisation
-
-    @Column(nullable = false)
-    private double solde;
-
-    @Temporal(TemporalType.DATE)
-    @Column(name = "date_creation")
-    private Date dateCreation;
-
-    @Enumerated(EnumType.ORDINAL)
-    @Column(nullable = false)
-    private TypeCompte type;
-}
-```
+| Champ | Type | Détail |
+|---|---|---|
+| `id` | `Long` | `@Id`, `GENERATED IDENTITY` |
+| `numeroCompte` | `String` | `@Column(name = "numero_compte", unique = true, length = 20)` — *personnalisation* |
+| `titulaire` | `String` | `@Column(name = "titulaire", length = 80)` — *personnalisation* |
+| `solde` | `double` | `@Column(nullable = false)` |
+| `dateCreation` | `Date` | `@Temporal(DATE)` → colonne `date_creation` |
+| `type` | `TypeCompte` | `@Enumerated(ORDINAL)`, `@Column(nullable = false)` |
 
 `@XmlRootElement(name = "compte")` fait de la classe un **élément racine** JAXB : c'est lui
 qui rend la sérialisation XML possible. `@XmlAccessorType(FIELD)` demande à JAXB de lire
@@ -243,78 +230,64 @@ représentation strictement identique au JSON produit par Jackson.
 
 ### `CompteRepository`
 
-```java
-public interface CompteRepository extends JpaRepository<Compte, Long> {
+Interface qui étend `JpaRepository<Compte, Long>` : elle hérite donc de `findAll()`, `save()`,
+`saveAll()`, `findById()`, `delete()`, `count()`… sans aucune implémentation à écrire.
 
-    List<Compte> findByType(TypeCompte type);
-    List<Compte> findBySoldeBetweenOrderBySoldeAsc(double min, double max);
-    Optional<Compte> findByNumeroCompte(String numeroCompte);
+Quatre méthodes ont été ajoutées pour les endpoints de personnalisation :
 
-    @Query("select coalesce(sum(c.solde), 0) from Compte c where c.type = :type")
-    double totalSoldeParType(@Param("type") TypeCompte type);
-}
-```
+| Méthode | Usage |
+|---|---|
+| `findByType(TypeCompte)` | filtrage `GET /banque/comptes?type=EPARGNE` |
+| `findBySoldeBetweenOrderBySoldeAsc(double, double)` | recherche par intervalle de solde, triée |
+| `findByNumeroCompte(String)` → `Optional<Compte>` | recherche par référence métier |
+| `totalSoldeParType(TypeCompte)` | somme agrégée (requête JPQL `@Query` avec `coalesce`) |
 
-Seules les méthodes du `JpaRepository` sont exigées par le cours (`findAll`, `save`,
-`deleteById`…) ; les quatre autres servent les endpoints de personnalisation (filtrage,
-recherche par référence, statistiques).
+Seules les méthodes héritées de `JpaRepository` sont exigées par le cours ; les quatre autres
+servent les endpoints de personnalisation (filtrage, recherche par référence, statistiques).
 
 ---
 
 ## 7. Initialisation des données (étape 6)
 
-```java
-@Bean
-CommandLineRunner initialiserComptes(CompteRepository compteRepository) {
-    return args -> {
-        if (compteRepository.count() == 0) {
-            List<Compte> comptes = List.of(
-                new Compte(null, "BQ-2026-000101", "Nadia El Amrani", 12500.75, formater(format, "2024-01-15"), TypeCompte.COURANT),
-                new Compte(null, "BQ-2026-000102", "Youssef Bennis",  48200.00, formater(format, "2023-11-02"), TypeCompte.EPARGNE),
-                new Compte(null, "BQ-2026-000103", "Salma Ouazzani",   7300.40, formater(format, "2024-03-21"), TypeCompte.COURANT),
-                new Compte(null, "BQ-2026-000104", "Karim Tazi",      15600.00, formater(format, "2024-06-09"), TypeCompte.EPARGNE),
-                new Compte(null, "BQ-2026-000105", "Hind Berrada",       4009.78, formater(format, "2025-01-30"), TypeCompte.COURANT)
-            );
-            compteRepository.saveAll(comptes);
-        }
-        compteRepository.findAll().forEach(System.out::println);
-        System.out.println("=== Nombre total de comptes : " + compteRepository.count() + " ===");
-    };
-}
-```
+Un bean `CommandLineRunner` nommé `initialiserComptes` est déclaré dans la classe `main`.
+Il s'exécute une seule fois, après l'initialisation du contexte Spring :
+
+1. il compte les lignes de la table (`compteRepository.count()`) et n'insère le jeu de données
+   **que si la table est vide** — ce garde évite les doublons en cas de redémarrage ;
+2. il insère **5 comptes** avec `saveAll(...)` : `BQ-2026-000101` (Nadia El Amrani, 12 500,75,
+   COURANT), `BQ-2026-000102` (Youssef Bennis, 48 200,00, EPARGNE), `BQ-2026-000103`
+   (Salma Ouazzani, 7 300,40, COURANT), `BQ-2026-000104` (Karim Tazi, 15 600,00, EPARGNE)
+   et `BQ-2026-000105` (Hind Berrada, COURANT, solde aléatoire) ;
+3. il relit la table avec `findAll().forEach(System.out::println)` et affiche
+   `=== Nombre total de comptes : 5 ===`.
 
 L'énoncé insère **3 comptes aléatoires** (`Math.random()*9000`). Ici le jeu de données est
-**déterministe** (5 comptes, soldes et dates fixes) : c'est indispensable pour que les tests
-`curl` du § 12 donnent des résultats reproductibles et vérifiables. Le garde
-`if (compteRepository.count() == 0)` évite en plus les doublons en cas de redémarrage.
+**déterministe** pour les quatre premiers comptes (soldes et dates fixes) : c'est indispensable
+pour que les tests `curl` du § 12 donnent des résultats reproductibles et vérifiables.
 
-Une seule valeur reste aléatoire, sur le **dernier** compte :
-
-```java
-new Compte(null, "BQ-2026-000105", "Hind Berrada",
-           Math.round(Math.random() * 900000) / 100.0, ...)
-```
-
-C'est volontaire : la trace de démarrage prouve ainsi que le code tourne réellement à chaque
-exécution (`solde=4009.78` dans les logs de ce dépôt), tout en laissant les quatre premiers
-comptes stables pour les tests.
+Une seule valeur reste aléatoire, sur le **dernier** compte : son solde est tiré au sort entre
+0 et 9 000 MAD (`Math.round(Math.random() * 900000) / 100.0`). C'est volontaire : la trace de
+démarrage prouve ainsi que le code tourne réellement à chaque exécution (`solde=4009.78` dans
+les logs de ce dépôt), tout en laissant les quatre premiers comptes stables pour les tests.
 
 ---
 
 ## 8. Configuration du service REST avec Jersey (étape 7)
 
-```java
-@Configuration
-public class JerseyConfig extends ResourceConfig {
+La classe `JerseyConfig` (paquet `config`) est annotée `@Configuration` et **étend**
+`org.glassfish.jersey.server.ResourceConfig`. Son constructeur reçoit l'`ObjectMapper` de
+Spring Boot et enregistre quatre éléments :
 
-    public JerseyConfig(ObjectMapper objectMapper) {
-        register(CompteRestJaxRSAPI.class);
-        register(CompteIntrouvableMapper.class);
-        register(CorsFilter.class);
-        register(new JacksonJsonProvider(objectMapper));
-    }
-}
-```
+| Élément enregistré | Rôle |
+|---|---|
+| `CompteRestJaxRSAPI.class` | la ressource JAX-RS, c'est-à-dire tous les endpoints `/banque/comptes` |
+| `CompteIntrouvableMapper.class` | l'`ExceptionMapper` qui traduit l'exception métier en `404` JSON |
+| `CorsFilter.class` | le filtre qui ajoute les en-têtes CORS à toutes les réponses |
+| `new JacksonJsonProvider(objectMapper)` | le fournisseur JSON, alimenté par l'`ObjectMapper` configuré de Spring |
+
+Le module `jersey-media-jaxb`, présent au classpath, fournit automatiquement le fournisseur XML :
+il n'y a donc rien à enregistrer pour le XML, il suffit que les classes modèles portent les
+annotations JAXB.
 
 Trois écarts assumés par rapport au snippet du cours :
 
@@ -350,37 +323,21 @@ délègue à `CompteService` (interface) → `CompteServiceImpl` (`@Service`, `@
 `CompteRepository`. La ressource HTTP ne connaît donc ni JPA ni Hibernate, et les règles métier
 (numéro auto-généré, date par défaut, arrondi des statistiques) sont centralisées.
 
-Extrait représentatif :
+Comportement des deux méthodes principales — la lecture de la liste :
 
-```java
-@Component
-@Path("/banque")
-public class CompteRestJaxRSAPI {
+* elle est annotée `@Path("/comptes")` + `@GET`, avec
+  `@Produces({APPLICATION_JSON, APPLICATION_XML})` ;
+* elle reçoit en paramètres optionnels `@QueryParam("type")`, `@QueryParam("soldeMin")` et
+  `@QueryParam("soldeMax")` ;
+* selon le paramètre présent, elle appelle `listerParType`, `rechercherParIntervalleDeSolde`
+  ou `listerComptes` du service, puis renvoie le résultat encapsulé dans `Comptes.de(...)`.
 
-    private final CompteService compteService;
+Et la méthode de création :
 
-    public CompteRestJaxRSAPI(CompteService compteService) {   // injection par constructeur
-        this.compteService = compteService;
-    }
-
-    @Path("/comptes")
-    @GET
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Comptes getComptes(@QueryParam("type") TypeCompte type,
-                              @QueryParam("soldeMin") Double soldeMin,
-                              @QueryParam("soldeMax") Double soldeMax) { ... }
-
-    @Path("/comptes")
-    @POST
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response addCompte(Compte compte) {
-        Compte cree = compteService.creer(compte);
-        return Response.created(URI.create("/banque/comptes/" + cree.getId()))
-                       .entity(cree).build();
-    }
-}
-```
+* `@Path("/comptes")` + `@POST`, `@Consumes` et `@Produces` sur les deux formats ;
+* elle délègue à `compteService.creer(compte)` puis construit la réponse avec
+  `Response.created(...)`, ce qui émet le code `201` et l'en-tête `Location` pointant vers
+  `/banque/comptes/{id}`.
 
 Deux choix de conception à noter :
 
@@ -393,28 +350,24 @@ Deux choix de conception à noter :
 
 ## 10. Support JSON **et** XML (étape 9)
 
-Le mécanisme tient en une ligne par méthode :
-
-```java
-@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-```
-
-Jersey négocie ensuite le format avec l'en-tête `Accept` (réponse) et `Content-Type` (requête).
+Le mécanisme tient en deux annotations par méthode : `@Produces({APPLICATION_JSON,
+APPLICATION_XML})` pour la réponse et `@Consumes({APPLICATION_JSON, APPLICATION_XML})` pour le
+corps de requête. Jersey négocie ensuite le format avec l'en-tête `Accept` (réponse) et
+`Content-Type` (requête).
 Deux détails ont dû être ajoutés pour que la promesse soit tenue :
 
 1. **Enveloppe de collection.** JAXB refuse de sérialiser une `List` nue : il lui faut un
-   élément racine. La classe `Comptes` fournit cette racine pour les deux formats.
+   élément racine. La classe `Comptes` (paquet `dto`) joue ce rôle pour les deux formats :
 
-   ```java
-   @XmlRootElement(name = "comptes")
-   @XmlAccessorType(XmlAccessType.FIELD)
-   public class Comptes {
-       @XmlElement(name = "compte")
-       @JsonProperty("compte")
-       private List<Compte> comptes = new ArrayList<>();
-   }
-   ```
+   | Annotation | Effet |
+   |---|---|
+   | `@XmlRootElement(name = "comptes")` | racine XML `<comptes>` |
+   | `@XmlAccessorType(FIELD)` | JAXB lit les champs |
+   | `@XmlElement(name = "compte")` | chaque élément de la liste devient `<compte>` |
+   | `@JsonProperty("compte")` | la clé JSON porte le **même** nom que l'élément XML |
+
+   Elle contient un unique champ `List<Compte> comptes` et une fabrique statique
+   `Comptes.de(List<Compte>)` utilisée par la ressource.
 
    Résultat : `GET /banque/comptes` renvoie `{"compte":[...]}` en JSON et
    `<comptes><compte>…</compte></comptes>` en XML — même structure, même nom de nœud.

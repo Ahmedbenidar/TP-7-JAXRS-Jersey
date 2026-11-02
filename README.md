@@ -1,23 +1,3 @@
-# TP 7 — Services REST JAX-RS avec Jersey : JSON et XML
-
-> Travail réalisé par **Ahmed BEN IDAR** dans le cadre du cours
-> *Architecture Microservices : Conception, Déploiement et Orchestration* (MLIAEdu — Lab 161).
-> Projet Maven unique (`banque-jaxrs-jersey`), exécuté réellement sur la base **H2 en mémoire**.
->
-> ⚠️ Le **quiz** du lab n'est volontairement pas traité : seules les 10 étapes techniques sont couvertes.
-
-Ce dépôt contient un **service bancaire REST** écrit en **JAX-RS** et exécuté par **Jersey**
-à l'intérieur de Spring Boot 3, avec persistance Spring Data JPA / Hibernate sur H2.
-Le même endpoint répond **en JSON ou en XML** selon l'en-tête `Accept` du client : c'est tout
-l'objet du TP.
-
-Toutes les captures de ce README sont des **captures de résultats réels** : elles sont générées
-directement à partir des sorties console effectivement produites pendant le développement
-(dossier [`docs/logs/`](docs/logs)) par le petit outil [`docs/tools/console-vers-png.ps1`](docs/tools/console-vers-png.ps1).
-Aucune sortie n'a été rédigée à la main.
-
----
-
 ## 1. Sommaire — correspondance avec les étapes du lab
 
 | Étape du lab | Où la retrouver ici |
@@ -34,9 +14,6 @@ Aucune sortie n'a été rédigée à la main.
 | 10. Annotation `@XmlRootElement` | § 11 — sérialisation JAXB réelle |
 | — | § 12 — tests réels des 9 endpoints |
 | — | § 13 — contrat WADL |
-| — | § 14 — résumé pédagogique |
-| — | § 15 — personnalisation |
-| — | § 16 — reproductibilité |
 
 ---
 
@@ -480,86 +457,6 @@ On y lit notamment `jersey:generatedBy="Jersey: 3.1.9"`, la racine
 **les deux représentations** `mediaType="application/json"` et
 `mediaType="application/xml"`. C'est la preuve, côté serveur, que la double sérialisation est
 réellement enregistrée — pas seulement déclarée dans le code.
-
----
-
-## 14. Résumé pédagogique
-
-1. **JAX-RS est une spécification, Jersey une implémentation.** Les annotations (`@Path`,
-   `@GET`, `@Produces`…) viennent de `jakarta.ws.rs` ; Jersey fournit le moteur qui les exécute.
-   Rien dans le code métier ne dépend de Jersey : changer d'implémentation (RESTEasy, CXF) ne
-   demanderait que de changer la configuration.
-2. **Spring Boot et Jersey cohabitent grâce à un pont.** `spring-boot-starter-jersey` apporte
-   `jersey-spring6`, qui permet à Jersey de résoudre les beans Spring. Cela impose
-   d'enregistrer des **classes** (`register(X.class)`) et non des instances, sous peine de
-   perdre l'injection de dépendances.
-3. **La négociation de contenu est le cœur du TP.** Une seule méthode Java peut produire deux
-   représentations ; c'est l'en-tête `Accept` qui décide. Cela suppose deux fournisseurs
-   (`MessageBodyWriter`) : Jackson pour le JSON, JAXB pour le XML.
-4. **JAXB impose une racine.** Une `List` ne peut pas être un document XML : d'où l'enveloppe
-   `Comptes`. Le cours passe sous silence ce point, et l'`orElse(null)` du snippet d'origine
-   renvoie silencieusement un corps vide au lieu d'un `404`.
-5. **Les codes HTTP portent du sens.** `201` + `Location` à la création, `204` à la
-   suppression, `404` quand la ressource n'existe pas. Un `ExceptionMapper` transforme
-   l'exception métier en réponse JSON propre, au lieu d'une page d'erreur HTML de Jersey.
-6. **H2 en mémoire est un formidable outil de démonstration** : aucune installation, une base
-   recréée à chaque démarrage, une console SQL pour vérifier l'état réel des données
-   (captures § 5), et un `ddl-auto=update` qui génère le schéma depuis les entités.
-
----
-
-## 15. Personnalisation par rapport à l'énoncé
-
-Pour éviter la similarité avec les autres rendus, le projet ne se limite pas au strict minimum
-du lab :
-
-| Élément | Consigne | Ici |
-|---|---|---|
-| `groupId` / `artifactId` | au choix | `com.ahmedbenidar` / `banque-jaxrs-jersey` |
-| Entité `Compte` | `id`, `solde`, `dateCreation`, `type` | + `numeroCompte` (unique, `BQ-2026-0001xx`) et `titulaire`, avec `@Column` nommés |
-| Énumération | `COURANT, EPARGNE` | conservée, mais mappée sur des colonnes `NOT NULL` |
-| `CommandLineRunner` | 3 comptes aléatoires | **5 comptes déterministes** + garde anti-doublon + affichage d'un rapport |
-| Repository | `JpaRepository` vide | + `findByType`, `findBySoldeBetween…`, `findByNumeroCompte`, `totalSoldeParType` (`@Query`) |
-| Architecture | ressource → repository | ressource → **service** (`@Transactional`) → repository |
-| Contrôleur JAX-RS | 4 endpoints JSON | **9 endpoints**, tous en JSON **et** XML |
-| Endpoints | CRUD | + filtrage `?type=`, + intervalle de solde, + recherche par référence, + `/statistiques` |
-| Codes HTTP | `200` partout | `201` + `Location`, `204`, `404` métier |
-| Erreurs | non traitées | `CompteIntrouvableException` + `ExceptionMapper` JAX-RS |
-| Collections | `List` renvoyée nue | enveloppe `Comptes` (`@XmlRootElement`) → JSON et XML équivalents |
-| Dates | format par défaut | `yyyy-MM-dd` homogène en lecture **et** écriture |
-| CORS | absent | `ContainerResponseFilter` sur toutes les réponses |
-| Configuration Jersey | `@Bean ResourceConfig` | `JerseyConfig extends ResourceConfig` + fournisseur Jackson partagé |
-| Traçabilité | — | logs réels versionnés, 4 captures PNG, script `tester-api.ps1` rejouable |
-
----
-
-## 16. Reproductibilité complète
-
-```powershell
-git clone https://github.com/Ahmedbenidar/TP-7-JAXRS-Jersey.git
-cd TP-7-JAXRS-Jersey
-
-$env:JAVA_HOME = "C:\Program Files\Java\jdk-21"
-mvn spring-boot:run          # service sur http://localhost:8082
-
-# dans un second terminal
-powershell -File docs\tools\tester-api.ps1      # rejoue les 15 scénarios curl
-```
-
-| URL | Contenu |
-|---|---|
-| <http://localhost:8082/banque/comptes> | liste JSON (ou XML avec `Accept: application/xml`) |
-| <http://localhost:8082/banque/comptes/statistiques> | indicateurs agrégés |
-| <http://localhost:8082/application.wadl> | contrat WADL généré par Jersey |
-| <http://localhost:8082/h2-console> | console SQL H2 |
-
-Régénérer les captures depuis les logs réels :
-
-```powershell
-powershell -File docs\tools\console-vers-png.ps1 -Entree docs\logs\app-demarrage.log -Sortie docs\screenshots\app-demarrage.png -Titre "mvn spring-boot:run - demarrage de l application (port 8082)" -Debut 26 -Fin 150
-powershell -File docs\tools\console-vers-png.ps1 -Entree docs\logs\tests-endpoints.log -Sortie docs\screenshots\tests-endpoints.png -Titre "Tests des endpoints JAX-RS - resultats reels (curl)"
-powershell -File docs\tools\console-vers-png.ps1 -Entree docs\logs\wadl-et-console-h2.log -Sortie docs\screenshots\wadl-et-console-h2.png -Titre "Contrat WADL genere par Jersey et verification de la base H2"
-```
 
 ---
 

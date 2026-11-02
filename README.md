@@ -1,22 +1,3 @@
-# TP 7 — Services REST JAX-RS avec Jersey : JSON et XML
-
-> Travail réalisé par **Ahmed BEN IDAR** dans le cadre du cours
-> *Architecture Microservices : Conception, Déploiement et Orchestration* (MLIAEdu — Lab 161).
-> Projet Maven unique (`banque-jaxrs-jersey`), exécuté réellement sur la base **H2 en mémoire**.
->
-> ⚠️ Le **quiz** du lab n'est volontairement pas traité : seules les 10 étapes techniques sont couvertes.
-
-Ce dépôt contient un **service bancaire REST** écrit en **JAX-RS** et exécuté par **Jersey**
-à l'intérieur de Spring Boot 3, avec persistance Spring Data JPA / Hibernate sur H2.
-Le même endpoint répond **en JSON ou en XML** selon l'en-tête `Accept` du client : c'est tout
-l'objet du TP.
-
-Toutes les captures de ce README sont des **captures de résultats réels** : elles sont générées
-directement à partir des sorties console effectivement produites pendant le développement
-(dossier [`docs/logs/`](docs/logs)) par le petit outil [`docs/tools/console-vers-png.ps1`](docs/tools/console-vers-png.ps1).
-Aucune sortie n'a été rédigée à la main.
-
----
 
 ## 1. Sommaire — correspondance avec les étapes du lab
 
